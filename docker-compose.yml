@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  scylla:
+    image: scylladb/scylla:5.2
+    container_name: rscylla-test-scylla
+    ports:
+      - "9042:9042"
+      - "9160:9160"
+      - "10000:10000"
+    volumes:
+      - scylla-data:/var/lib/scylla
+    command: --smp 1 --memory 512M --overprovisioned 1
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe cluster"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks:
+      - scylla-network
+
+volumes:
+  scylla-data:
+    driver: local
+
+networks:
+  scylla-network:
+    driver: bridge
