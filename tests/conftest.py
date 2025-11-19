@@ -1,5 +1,5 @@
 """
-Pytest configuration and fixtures for rscylla tests
+Pytest configuration and fixtures for rsylla tests
 """
 
 import os
@@ -12,7 +12,7 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from rscylla import Session, SessionBuilder
+    from rsylla import Session, SessionBuilder
 
     RSCYLLA_AVAILABLE = True
 except ImportError:
@@ -48,7 +48,7 @@ def scylla_connection_string(scylla_host, scylla_port):
 async def wait_for_scylla(scylla_connection_string):
     """Wait for ScyllaDB to be ready"""
     if not RSCYLLA_AVAILABLE:
-        pytest.skip("rscylla not available - run 'maturin develop' first")
+        pytest.skip("rsylla not available - run 'maturin develop' first")
 
     max_retries = 60
     retry_delay = 2
@@ -83,7 +83,7 @@ async def session(scylla_connection_string, wait_for_scylla):
 @pytest.fixture(scope="function")
 async def test_keyspace(session):
     """Create and use a test keyspace"""
-    keyspace_name = "test_rscylla"
+    keyspace_name = "test_rsylla"
 
     # Create keyspace
     await session.execute(

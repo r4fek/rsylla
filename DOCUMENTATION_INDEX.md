@@ -1,11 +1,11 @@
 # Complete Documentation Index
 
-This document provides a complete overview of all available documentation for rscylla.
+This document provides a complete overview of all available documentation for rsylla.
 
 ## Documentation Structure
 
 ```
-rscylla/
+rsylla/
 ├── README.md                              # Main project overview
 ├── QUICKSTART.md                          # Quick start guide
 ├── CONTRIBUTING.md                        # Contribution guidelines

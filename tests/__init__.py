@@ -1,3 +1,3 @@
 """
-rscylla test suite
+rsylla test suite
 """

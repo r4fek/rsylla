@@ -23,7 +23,7 @@ batch = Batch(batch_type="logged")
 
 **Examples:**
 ```python
-from rscylla import Batch
+from rsylla import Batch
 
 # Logged batch (default) - atomic
 logged = Batch("logged")
@@ -60,7 +60,7 @@ Adds a Query object to the batch.
 
 **Example:**
 ```python
-from rscylla import Query
+from rsylla import Query
 
 batch = Batch("unlogged")
 
@@ -225,7 +225,7 @@ session.batch(batch, [
 #### Logged Batch - Atomic Writes
 
 ```python
-from rscylla import Session, Batch
+from rsylla import Session, Batch
 
 session = Session.connect(["127.0.0.1:9042"])
 session.use_keyspace("myapp", False)

@@ -117,7 +117,7 @@ Returns the tracing ID if tracing was enabled.
 
 **Example:**
 ```python
-from rscylla import Query
+from rsylla import Query
 
 query = Query("SELECT * FROM users").with_tracing(True)
 result = session.query(query)
@@ -180,7 +180,7 @@ else:
 #### Processing Large Result Sets
 
 ```python
-from rscylla import Query
+from rsylla import Query
 
 # Query with paging
 query = Query("SELECT * FROM large_table").with_page_size(1000)

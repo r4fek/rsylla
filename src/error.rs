@@ -1,7 +1,7 @@
 use pyo3::create_exception;
 use pyo3::prelude::*;
 
-create_exception!(rscylla, ScyllaError, pyo3::exceptions::PyException);
+create_exception!(rsylla, ScyllaError, pyo3::exceptions::PyException);
 
 // Helper functions to convert scylla errors to PyErr
 // We can't implement From directly due to orphan rules

@@ -1,8 +1,8 @@
 """
-Example demonstrating advanced session configuration with rscylla
+Example demonstrating advanced session configuration with rsylla
 """
 
-from rscylla import Query, ScyllaError, SessionBuilder
+from rsylla import Query, ScyllaError, SessionBuilder
 
 
 def main():

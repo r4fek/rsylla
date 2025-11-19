@@ -17,7 +17,7 @@ query = Query(query_string)
 
 **Example:**
 ```python
-from rscylla import Query
+from rsylla import Query
 
 query = Query("SELECT * FROM users WHERE id = ?")
 ```
@@ -178,7 +178,7 @@ print(f"Executing: {query_str}")
 #### Read Query with Options
 
 ```python
-from rscylla import Session, Query
+from rsylla import Session, Query
 
 session = Session.connect(["127.0.0.1:9042"])
 session.use_keyspace("myapp", False)
@@ -205,7 +205,7 @@ if result.tracing_id():
 
 ```python
 import time
-from rscylla import Query
+from rsylla import Query
 
 # Create query with custom timestamp
 timestamp = int(time.time() * 1000000)
@@ -385,7 +385,7 @@ print(f"Prepared: {query_str}")
 #### Efficient Bulk Insert
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 session = Session.connect(["127.0.0.1:9042"])
 session.use_keyspace("myapp", False)

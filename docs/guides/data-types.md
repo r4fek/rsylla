@@ -1,6 +1,6 @@
 # Data Types Guide
 
-This guide explains how CQL data types are mapped to Python types in rscylla.
+This guide explains how CQL data types are mapped to Python types in rsylla.
 
 ## Basic Types
 

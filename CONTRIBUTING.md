@@ -1,6 +1,6 @@
-# Contributing to rscylla
+# Contributing to rsylla
 
-Thank you for your interest in contributing to rscylla! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to rsylla! This document provides guidelines and instructions for contributing.
 
 ## Development Setup
 
@@ -14,8 +14,8 @@ Thank you for your interest in contributing to rscylla! This document provides g
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rscylla.git
-cd rscylla
+git clone https://github.com/yourusername/rsylla.git
+cd rsylla
 
 # Create a virtual environment
 python -m venv venv
@@ -31,7 +31,7 @@ maturin develop
 ## Project Structure
 
 ```
-rscylla/
+rsylla/
 ├── src/                    # Rust source code
 │   ├── lib.rs             # Main library entry point
 │   ├── session.rs         # Session and SessionBuilder
@@ -40,7 +40,7 @@ rscylla/
 │   ├── batch.rs           # Batch operations
 │   ├── types.rs           # Type conversions
 │   └── error.rs           # Error handling
-├── python/rscylla/        # Python package
+├── python/rsylla/        # Python package
 │   ├── __init__.py        # Python module initialization
 │   └── __init__.pyi       # Type stubs
 ├── examples/              # Example scripts
@@ -53,9 +53,9 @@ rscylla/
 When adding bindings for new scylla-rust-driver features:
 
 1. **Update Rust code**: Add the binding in the appropriate module (session.rs, query.rs, etc.)
-2. **Update Python types**: Add type hints to `python/rscylla/__init__.pyi`
+2. **Update Python types**: Add type hints to `python/rsylla/__init__.pyi`
 3. **Export in lib.rs**: Make sure the new class/function is registered in `lib.rs`
-4. **Update __init__.py**: Add to exports in `python/rscylla/__init__.py`
+4. **Update __init__.py**: Add to exports in `python/rsylla/__init__.py`
 5. **Add tests**: Create tests for the new functionality
 6. **Update documentation**: Add usage examples to README.md
 7. **Create example**: Add example script if the feature is substantial
@@ -124,4 +124,4 @@ Feel free to open an issue for any questions or concerns.
 
 ## License
 
-By contributing to rscylla, you agree that your contributions will be licensed under both MIT and Apache-2.0 licenses.
+By contributing to rsylla, you agree that your contributions will be licensed under both MIT and Apache-2.0 licenses.

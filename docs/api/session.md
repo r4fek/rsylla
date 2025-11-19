@@ -166,7 +166,7 @@ session = SessionBuilder().known_nodes(["127.0.0.1:9042"]).build()
 ### Complete Example
 
 ```python
-from rscylla import SessionBuilder
+from rsylla import SessionBuilder
 
 session = (
     SessionBuilder()
@@ -209,7 +209,7 @@ Quick way to create a session with default configuration.
 
 **Example:**
 ```python
-from rscylla import Session
+from rsylla import Session
 
 session = Session.connect(["127.0.0.1:9042"])
 ```
@@ -268,7 +268,7 @@ Executes a Query object with configuration.
 
 **Example:**
 ```python
-from rscylla import Query
+from rsylla import Query
 
 query = (
     Query("SELECT * FROM users WHERE id = ?")
@@ -331,7 +331,7 @@ Executes a batch operation.
 
 **Example:**
 ```python
-from rscylla import Batch
+from rsylla import Batch
 
 batch = Batch("logged")
 batch.append_statement("INSERT INTO users (id, name) VALUES (?, ?)")
@@ -399,7 +399,7 @@ if current_ks:
 ### Complete Example
 
 ```python
-from rscylla import Session, Query, Batch
+from rsylla import Session, Query, Batch
 
 # Create session
 session = Session.connect(["127.0.0.1:9042"])

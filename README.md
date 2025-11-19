@@ -1,4 +1,4 @@
-# rscylla
+# rsylla
 
 High-performance Python bindings for ScyllaDB/Cassandra using the official [scylla-rust-driver](https://github.com/scylladb/scylla-rust-driver).
 
@@ -13,7 +13,7 @@ High-performance Python bindings for ScyllaDB/Cassandra using the official [scyl
 ## Installation
 
 ```bash
-pip install rscylla
+pip install rsylla
 ```
 
 ### Building from source
@@ -31,7 +31,7 @@ maturin develop --release
 ## Quick Start
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 # Connect to ScyllaDB cluster
 session = Session.connect(["127.0.0.1:9042"])
@@ -52,7 +52,7 @@ for row in result:
 ### Creating a Session
 
 ```python
-from rscylla import SessionBuilder
+from rsylla import SessionBuilder
 
 # Using SessionBuilder for advanced configuration
 session = (
@@ -96,7 +96,7 @@ for row in result:
 ### Using Query Objects
 
 ```python
-from rscylla import Query
+from rsylla import Query
 
 # Create a query with configuration
 query = (
@@ -139,7 +139,7 @@ result = session.execute_prepared(prepared, {"id": 2, "name": "Jane", "email": "
 ### Batch Operations
 
 ```python
-from rscylla import Batch
+from rsylla import Batch
 
 # Create a batch
 batch = Batch("logged")  # or "unlogged" or "counter"
@@ -211,7 +211,7 @@ print(f"Schema agreement reached: {agreed}")
 ### Error Handling
 
 ```python
-from rscylla import ScyllaError
+from rsylla import ScyllaError
 
 try:
     result = session.execute("INVALID QUERY")

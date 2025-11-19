@@ -31,7 +31,7 @@ A clear and concise description of what you expected to happen.
 
 - OS: [e.g. Ubuntu 22.04, macOS 13.0, Windows 11]
 - Python version: [e.g. 3.11.0]
-- rscylla version: [e.g. 0.1.0]
+- rsylla version: [e.g. 0.1.0]
 - ScyllaDB/Cassandra version: [e.g. ScyllaDB 5.2]
 
 ## Additional context

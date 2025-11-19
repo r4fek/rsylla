@@ -1,4 +1,4 @@
-"""Type stubs for rscylla"""
+"""Type stubs for rsylla"""
 
 from collections.abc import Iterator
 from typing import Any

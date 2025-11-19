@@ -6,7 +6,7 @@ import time
 
 import pytest
 
-from rscylla import Query, ScyllaError
+from rsylla import Query, ScyllaError
 
 
 @pytest.mark.integration

@@ -1,6 +1,6 @@
 # Best Practices Guide
 
-This guide covers best practices for using rscylla efficiently and correctly.
+This guide covers best practices for using rsylla efficiently and correctly.
 
 ## Connection Management
 
@@ -8,7 +8,7 @@ This guide covers best practices for using rscylla efficiently and correctly.
 
 ```python
 # ✅ DO: Create one session and reuse it
-from rscylla import SessionBuilder
+from rsylla import SessionBuilder
 
 session = (
     SessionBuilder()
@@ -83,7 +83,7 @@ for i in range(1000):
 ### Use Appropriate Consistency Levels
 
 ```python
-from rscylla import Query
+from rsylla import Query
 
 # Read queries: prefer lower consistency for better performance
 read_query = (
@@ -194,7 +194,7 @@ session.execute("""
 ### Use Batches Correctly
 
 ```python
-from rscylla import Batch
+from rsylla import Batch
 
 # ✅ DO: Batch statements for same partition
 user_id = 123
@@ -243,7 +243,7 @@ counter_batch.append_statement("UPDATE stats SET views = views + ? WHERE page = 
 ### Handle Errors Gracefully
 
 ```python
-from rscylla import ScyllaError
+from rsylla import ScyllaError
 import time
 
 def execute_with_retry(session, query, values, max_retries=3):
@@ -305,7 +305,7 @@ session = (
 ### Use Pagination
 
 ```python
-from rscylla import Query
+from rsylla import Query
 
 # ✅ DO: Use paging for large result sets
 query = (
@@ -549,7 +549,7 @@ session.execute(
 ## Example: Complete Production Code
 
 ```python
-from rscylla import SessionBuilder, Query, ScyllaError
+from rsylla import SessionBuilder, Query, ScyllaError
 import time
 import logging
 

@@ -1,6 +1,6 @@
-# rscylla Test Suite
+# rsylla Test Suite
 
-This directory contains comprehensive tests for rscylla.
+This directory contains comprehensive tests for rsylla.
 
 ## Test Structure
 
@@ -198,7 +198,7 @@ If you get import errors:
 maturin develop
 
 # Verify import works
-python -c "import rscylla; print('OK')"
+python -c "import rsylla; print('OK')"
 ```
 
 ### Docker issues
@@ -233,7 +233,7 @@ pytest tests/ -v -s
 
 ```python
 import pytest
-from rscylla import Session
+from rsylla import Session
 
 @pytest.mark.integration
 class TestMyFeature:

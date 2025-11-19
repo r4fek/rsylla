@@ -1,8 +1,8 @@
-# Quick Start Guide for rscylla
+# Quick Start Guide for rsylla
 
 ## Prerequisites
 
-Before building rscylla, ensure you have the following installed:
+Before building rsylla, ensure you have the following installed:
 
 1. **Rust** (latest stable version)
    ```bash
@@ -70,14 +70,14 @@ make examples
 After building, test the installation:
 
 ```python
-import rscylla
+import rsylla
 
 # Check version
-print(rscylla.__version__)
+print(rsylla.__version__)
 
 # Verify imports work
-from rscylla import Session, SessionBuilder, Query, PreparedStatement
-print("rscylla installed successfully!")
+from rsylla import Session, SessionBuilder, Query, PreparedStatement
+print("rsylla installed successfully!")
 ```
 
 ## Running Examples
@@ -141,10 +141,10 @@ docker-compose up -d
 
 ## First Program
 
-Create `test_rscylla.py`:
+Create `test_rsylla.py`:
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 # Connect to ScyllaDB
 session = Session.connect(["127.0.0.1:9042"])
@@ -184,14 +184,14 @@ print("Success!")
 Run it:
 
 ```bash
-python test_rscylla.py
+python test_rsylla.py
 ```
 
 ## Troubleshooting
 
 ### Import Error
 
-If you get `ImportError: No module named '_rscylla'`:
+If you get `ImportError: No module named '_rsylla'`:
 - Make sure you ran `maturin develop` or installed the wheel
 - Check that you're using the correct Python environment
 

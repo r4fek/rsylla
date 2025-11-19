@@ -1,11 +1,11 @@
 # Advanced Usage Patterns
 
-This document demonstrates advanced patterns and real-world use cases for rscylla.
+This document demonstrates advanced patterns and real-world use cases for rsylla.
 
 ## 1. Multi-Tenant Application
 
 ```python
-from rscylla import Session, SessionBuilder
+from rsylla import Session, SessionBuilder
 import threading
 
 class MultiTenantDatabase:
@@ -86,7 +86,7 @@ user = db.get_tenant_data(1001, 123)
 ## 2. Time Series Data
 
 ```python
-from rscylla import Session, Batch
+from rsylla import Session, Batch
 from datetime import datetime, timedelta
 import time
 
@@ -227,7 +227,7 @@ for row in results:
 ## 3. Event Sourcing
 
 ```python
-from rscylla import Session, Query
+from rsylla import Session, Query
 import json
 import uuid
 
@@ -374,7 +374,7 @@ print(f"Account balance: {state['balance']}")  # 1300.0
 ## 4. Materialized Views Pattern
 
 ```python
-from rscylla import Session, Batch
+from rsylla import Session, Batch
 
 class MaterializedViewManager:
     """Manage denormalized views"""
@@ -527,7 +527,7 @@ for row in python_posts:
 ## 5. Caching Layer
 
 ```python
-from rscylla import Session
+from rsylla import Session
 from datetime import datetime, timedelta
 
 class CacheLayer:
@@ -629,7 +629,7 @@ cache.delete("user:123")
 ## 6. Rate Limiting
 
 ```python
-from rscylla import Session
+from rsylla import Session
 import time
 
 class RateLimiter:
@@ -737,4 +737,4 @@ else:
     # Return 429 error
 ```
 
-These patterns demonstrate real-world use cases and show how to effectively use rscylla for complex applications.
+These patterns demonstrate real-world use cases and show how to effectively use rsylla for complex applications.

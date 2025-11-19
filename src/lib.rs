@@ -17,7 +17,7 @@ use result::{QueryResult, Row};
 use session::{Session, SessionBuilder};
 
 #[pymodule]
-fn _rscylla(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _rsylla(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Core types
     m.add_class::<SessionBuilder>()?;
     m.add_class::<Session>()?;

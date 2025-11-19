@@ -1,8 +1,8 @@
 """
-Example demonstrating prepared statements with rscylla
+Example demonstrating prepared statements with rsylla
 """
 
-from rscylla import ScyllaError, Session
+from rsylla import ScyllaError, Session
 
 
 def main():

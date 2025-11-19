@@ -1,8 +1,8 @@
 """
-Basic usage example for rscylla
+Basic usage example for rsylla
 """
 
-from rscylla import ScyllaError, Session
+from rsylla import ScyllaError, Session
 
 
 def main():

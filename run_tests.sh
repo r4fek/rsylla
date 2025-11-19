@@ -3,7 +3,7 @@
 set -e
 
 echo "========================================="
-echo "rscylla Test Suite"
+echo "rsylla Test Suite"
 echo "========================================="
 echo ""
 
@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Check if library is built
 echo "Checking if library is built..."
-if ! python3 -c "import rscylla" 2>/dev/null; then
+if ! python3 -c "import rsylla" 2>/dev/null; then
     echo -e "${YELLOW}Library not built. Building with maturin...${NC}"
     if ! command -v maturin &> /dev/null; then
         echo -e "${RED}maturin not found. Installing...${NC}"

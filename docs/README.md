@@ -1,6 +1,6 @@
-# rscylla Documentation
+# rsylla Documentation
 
-Complete documentation for rscylla - Python bindings for ScyllaDB using the scylla-rust-driver.
+Complete documentation for rsylla - Python bindings for ScyllaDB using the scylla-rust-driver.
 
 ## Quick Links
 
@@ -12,9 +12,9 @@ Complete documentation for rscylla - Python bindings for ScyllaDB using the scyl
 
 ### Tutorials
 
-Step-by-step guides for learning rscylla:
+Step-by-step guides for learning rsylla:
 
-- **[Getting Started](tutorials/getting-started.md)** - Learn the basics of rscylla
+- **[Getting Started](tutorials/getting-started.md)** - Learn the basics of rsylla
   - Connecting to ScyllaDB
   - Creating keyspaces and tables
   - Basic CRUD operations
@@ -117,7 +117,7 @@ Real-world examples and patterns:
 ### Connecting to ScyllaDB
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 session = Session.connect(["127.0.0.1:9042"])
 ```
@@ -147,7 +147,7 @@ See: [PreparedStatement](api/query.md#preparedstatement)
 ### Batch Operations
 
 ```python
-from rscylla import Batch
+from rsylla import Batch
 
 batch = Batch("logged")
 batch.append_statement("INSERT INTO ...")
@@ -189,14 +189,14 @@ See: [Results API](api/results.md)
 
 ## Getting Help
 
-- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/yourusername/rscylla/issues)
-- **Discussions**: Ask questions on [GitHub Discussions](https://github.com/yourusername/rscylla/discussions)
+- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/yourusername/rsylla/issues)
+- **Discussions**: Ask questions on [GitHub Discussions](https://github.com/yourusername/rsylla/discussions)
 - **ScyllaDB Docs**: [ScyllaDB Documentation](https://docs.scylladb.com/)
 - **CQL Reference**: [CQL Documentation](https://cassandra.apache.org/doc/latest/cql/)
 
 ## Contributing
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on contributing to rscylla.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on contributing to rsylla.
 
 ## Related Resources
 

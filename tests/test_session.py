@@ -4,7 +4,7 @@ Tests for Session and SessionBuilder
 
 import pytest
 
-from rscylla import ScyllaError, Session, SessionBuilder
+from rsylla import ScyllaError, Session, SessionBuilder
 
 
 @pytest.mark.integration

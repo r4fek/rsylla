@@ -2,7 +2,7 @@
 
 ## What Was Created
 
-A comprehensive test suite with **76 tests** across **6 test files** covering all functionality of rscylla.
+A comprehensive test suite with **76 tests** across **6 test files** covering all functionality of rsylla.
 
 ### Test Structure
 
@@ -343,13 +343,13 @@ docker compose logs scylla
 sleep 60
 ```
 
-### "Import error: rscylla"
+### "Import error: rsylla"
 ```bash
 # Build the library
 maturin develop
 
 # Verify
-python -c "import rscylla; print('OK')"
+python -c "import rsylla; print('OK')"
 ```
 
 ## Next Steps
@@ -359,4 +359,4 @@ python -c "import rscylla; print('OK')"
 3. ⏳ Build library (`maturin develop`)
 4. ⏳ Run tests (`./run_tests.sh` or `make test`)
 
-The test infrastructure is complete and ready to verify all functionality of rscylla!
+The test infrastructure is complete and ready to verify all functionality of rsylla!

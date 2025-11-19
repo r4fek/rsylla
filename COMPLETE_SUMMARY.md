@@ -1,8 +1,8 @@
-# rscylla - Complete Project Summary
+# rsylla - Complete Project Summary
 
 ## Project Overview
 
-**rscylla** is a high-performance Python library for ScyllaDB/Cassandra, built using PyO3 bindings to the official scylla-rust-driver.
+**rsylla** is a high-performance Python library for ScyllaDB/Cassandra, built using PyO3 bindings to the official scylla-rust-driver.
 
 ## What Was Created
 
@@ -18,9 +18,9 @@
 - `src/error.rs` - Error handling and exception mapping
 
 **Python Package** (3 files)
-- `python/rscylla/__init__.py` - Module exports
-- `python/rscylla/__init__.pyi` - Type stubs (PEP 561)
-- `python/rscylla/py.typed` - Type checking marker
+- `python/rsylla/__init__.py` - Module exports
+- `python/rsylla/__init__.pyi` - Type stubs (PEP 561)
+- `python/rsylla/py.typed` - Type checking marker
 
 ### 📝 Documentation (5,480+ lines across 13 files)
 
@@ -224,13 +224,13 @@
 Once built and published:
 
 ```bash
-pip install rscylla
+pip install rsylla
 ```
 
 ### Quick Start
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 # Connect
 session = Session.connect(["127.0.0.1:9042"])

@@ -1,8 +1,8 @@
 """
-Example demonstrating batch operations with rscylla
+Example demonstrating batch operations with rsylla
 """
 
-from rscylla import Batch, ScyllaError, Session
+from rsylla import Batch, ScyllaError, Session
 
 
 def main():

@@ -4,7 +4,7 @@ Tests for Batch operations
 
 import pytest
 
-from rscylla import Batch
+from rsylla import Batch
 
 
 @pytest.mark.integration

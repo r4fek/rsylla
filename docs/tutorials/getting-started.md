@@ -1,12 +1,12 @@
-# Getting Started with rscylla
+# Getting Started with rsylla
 
-This tutorial will walk you through the basics of using rscylla to interact with ScyllaDB.
+This tutorial will walk you through the basics of using rsylla to interact with ScyllaDB.
 
 ## Prerequisites
 
 - Python 3.8 or higher
 - ScyllaDB or Cassandra running (locally or remote)
-- rscylla installed (`pip install rscylla`)
+- rsylla installed (`pip install rsylla`)
 
 ## Starting ScyllaDB
 
@@ -27,7 +27,7 @@ docker logs scylla | grep "Scylla version"
 The simplest way to connect is using `Session.connect()`:
 
 ```python
-from rscylla import Session
+from rsylla import Session
 
 # Connect to local ScyllaDB
 session = Session.connect(["127.0.0.1:9042"])
@@ -38,7 +38,7 @@ print("Connected to ScyllaDB!")
 For production environments with multiple nodes and authentication:
 
 ```python
-from rscylla import SessionBuilder
+from rsylla import SessionBuilder
 
 session = (
     SessionBuilder()
@@ -280,7 +280,7 @@ Benefits of prepared statements:
 Use the Query class for advanced options:
 
 ```python
-from rscylla import Query
+from rsylla import Query
 
 # Query with consistency level
 query = (
@@ -314,7 +314,7 @@ if result.tracing_id():
 Here's a complete example putting it all together:
 
 ```python
-from rscylla import Session, Query
+from rsylla import Session, Query
 import time
 
 def main():
@@ -471,7 +471,7 @@ else:
 
 If you get connection errors:
 ```python
-from rscylla import ScyllaError
+from rsylla import ScyllaError
 
 try:
     session = Session.connect(["127.0.0.1:9042"])

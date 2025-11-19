@@ -3,7 +3,7 @@ requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "rscylla"
+name = "rsylla"
 version = "0.1.0"
 description = "Python bindings for ScyllaDB/Cassandra using scylla-rust-driver"
 readme = "README.md"
@@ -23,7 +23,7 @@ classifiers = [
 [tool.maturin]
 features = ["pyo3/extension-module"]
 python-source = "python"
-module-name = "rscylla._rscylla"
+module-name = "rsylla._rsylla"
 
 [tool.black]
 line-length = 100
@@ -88,7 +88,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["rscylla"]
+known-first-party = ["rsylla"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

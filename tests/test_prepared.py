@@ -4,7 +4,7 @@ Tests for PreparedStatement
 
 import pytest
 
-from rscylla import ScyllaError
+from rsylla import ScyllaError
 
 
 @pytest.mark.integration
