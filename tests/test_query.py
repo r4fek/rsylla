@@ -1,9 +1,12 @@
 """
 Tests for Query execution
 """
-import pytest
+
 import time
-from rscylla import Session, Query, ScyllaError
+
+import pytest
+
+from rscylla import Query, ScyllaError
 
 
 @pytest.mark.integration
@@ -18,15 +21,19 @@ class TestQueryExecution:
 
     async def test_create_table(self, session, test_keyspace):
         """Test CREATE TABLE"""
-        await session.execute("""
+        await session.execute(
+            """
             CREATE TABLE IF NOT EXISTS test_table (
                 id int PRIMARY KEY,
                 name text
             )
-        """)
+        """
+        )
 
         # Insert and query
-        await session.execute("INSERT INTO test_table (id, name) VALUES (?, ?)", {"id": 1, "name": "test"})
+        await session.execute(
+            "INSERT INTO test_table (id, name) VALUES (?, ?)", {"id": 1, "name": "test"}
+        )
         result = await session.execute("SELECT * FROM test_table WHERE id = ?", {"id": 1})
 
         assert len(result) == 1
@@ -41,7 +48,7 @@ class TestQueryExecution:
         # Insert
         await session.execute(
             "INSERT INTO users (id, username, email) VALUES (?, ?, ?)",
-            {"id": 100, "username": "testuser", "email": "test@example.com"}
+            {"id": 100, "username": "testuser", "email": "test@example.com"},
         )
 
         # Select
@@ -55,8 +62,7 @@ class TestQueryExecution:
         """Test UPDATE"""
         # Update
         await session.execute(
-            "UPDATE users SET email = ? WHERE id = ?",
-            {"email": "newemail@example.com", "id": 1}
+            "UPDATE users SET email = ? WHERE id = ?", {"email": "newemail@example.com", "id": 1}
         )
 
         # Verify
@@ -86,58 +92,47 @@ class TestQueryObject:
 
     async def test_query_with_consistency(self, session, users_table, sample_users):
         """Test Query with consistency level"""
-        query = (
-            Query("SELECT * FROM users WHERE id = ?")
-            .with_consistency("ONE")
-        )
+        query = Query("SELECT * FROM users WHERE id = ?").with_consistency("ONE")
 
         result = await session.query(query, {"id": 1})
         assert len(result) == 1
 
     async def test_query_with_page_size(self, session, users_table, sample_users):
         """Test Query with page size"""
-        query = (
-            Query("SELECT * FROM users")
-            .with_page_size(2)
-        )
+        query = Query("SELECT * FROM users").with_page_size(2)
 
         result = await session.query(query)
         assert len(result) >= 2
 
     async def test_query_with_timeout(self, session, users_table):
         """Test Query with timeout"""
-        query = (
-            Query("SELECT * FROM users")
-            .with_timeout(5000)
-        )
+        query = Query("SELECT * FROM users").with_timeout(5000)
 
         result = await session.query(query)
         assert result is not None
 
     async def test_query_with_tracing(self, session, users_table, sample_users):
         """Test Query with tracing"""
-        query = (
-            Query("SELECT * FROM users WHERE id = ?")
-            .with_tracing(True)
-        )
+        query = Query("SELECT * FROM users WHERE id = ?").with_tracing(True)
 
         result = await session.query(query, {"id": 1})
         assert result is not None
 
         # Check for trace ID
-        trace_id = result.tracing_id()
+        _ = result.tracing_id()
         # Trace ID might be None in some cases, but the query should work
 
     async def test_query_with_timestamp(self, session, users_table):
         """Test Query with custom timestamp"""
         timestamp = int(time.time() * 1000000)
 
-        query = (
-            Query("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
-            .with_timestamp(timestamp)
+        query = Query("INSERT INTO users (id, username, email) VALUES (?, ?, ?)").with_timestamp(
+            timestamp
         )
 
-        await session.query(query, {"id": 200, "username": "timestampuser", "email": "ts@example.com"})
+        await session.query(
+            query, {"id": 200, "username": "timestampuser", "email": "ts@example.com"}
+        )
 
         # Verify insert
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 200})
@@ -148,7 +143,7 @@ class TestQueryObject:
         query = Query("SELECT * FROM users")
 
         # Initially should return some value
-        initial_idempotent = query.is_idempotent()
+        _ = query.is_idempotent()
 
         # Set idempotent
         query.set_idempotent(True)

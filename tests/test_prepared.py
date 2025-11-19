@@ -1,8 +1,10 @@
 """
 Tests for PreparedStatement
 """
+
 import pytest
-from rscylla import Session, ScyllaError
+
+from rscylla import ScyllaError
 
 
 @pytest.mark.integration
@@ -18,11 +20,9 @@ class TestPreparedStatement:
         """Test executing prepared INSERT"""
         prepared = await session.prepare("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
 
-        await session.execute_prepared(prepared, {
-            "id": 300,
-            "username": "prepareduser",
-            "email": "prepared@example.com"
-        })
+        await session.execute_prepared(
+            prepared, {"id": 300, "username": "prepareduser", "email": "prepared@example.com"}
+        )
 
         # Verify
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 300})
@@ -41,14 +41,12 @@ class TestPreparedStatement:
 
         # Execute multiple times
         for i in range(400, 410):
-            await session.execute_prepared(prepared, {
-                "id": i,
-                "username": f"user{i}",
-                "email": f"user{i}@example.com"
-            })
+            await session.execute_prepared(
+                prepared, {"id": i, "username": f"user{i}", "email": f"user{i}@example.com"}
+            )
 
         # Verify all inserts
-        result = await session.execute("SELECT COUNT(*) FROM users")
+        _ = await session.execute("SELECT COUNT(*) FROM users")
         # Should have at least 10 rows
 
     async def test_prepared_with_consistency(self, session, users_table):
@@ -95,10 +93,7 @@ class TestPreparedStatement:
         """Test prepared UPDATE statement"""
         prepared = await session.prepare("UPDATE users SET email = ? WHERE id = ?")
 
-        await session.execute_prepared(prepared, {
-            "email": "updated@example.com",
-            "id": 1
-        })
+        await session.execute_prepared(prepared, {"email": "updated@example.com", "id": 1})
 
         # Verify
         result = await session.execute("SELECT email FROM users WHERE id = ?", {"id": 1})

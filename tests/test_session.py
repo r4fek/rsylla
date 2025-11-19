@@ -1,8 +1,10 @@
 """
 Tests for Session and SessionBuilder
 """
+
 import pytest
-from rscylla import Session, SessionBuilder, ScyllaError
+
+from rscylla import ScyllaError, Session, SessionBuilder
 
 
 @pytest.mark.integration
@@ -20,20 +22,12 @@ class TestSessionBuilder:
 
     async def test_session_builder_basic(self, scylla_connection_string):
         """Test SessionBuilder basic configuration"""
-        session = await (
-            SessionBuilder()
-            .known_node(scylla_connection_string)
-            .build()
-        )
+        session = await SessionBuilder().known_node(scylla_connection_string).build()
         assert session is not None
 
     async def test_session_builder_multiple_nodes(self, scylla_connection_string):
         """Test SessionBuilder with multiple nodes"""
-        session = await (
-            SessionBuilder()
-            .known_nodes([scylla_connection_string])
-            .build()
-        )
+        session = await SessionBuilder().known_nodes([scylla_connection_string]).build()
         assert session is not None
 
     async def test_session_builder_with_options(self, scylla_connection_string):
@@ -52,28 +46,19 @@ class TestSessionBuilder:
         """Test SessionBuilder with compression"""
         # Test LZ4
         session_lz4 = await (
-            SessionBuilder()
-            .known_node(scylla_connection_string)
-            .compression("lz4")
-            .build()
+            SessionBuilder().known_node(scylla_connection_string).compression("lz4").build()
         )
         assert session_lz4 is not None
 
         # Test Snappy
         session_snappy = await (
-            SessionBuilder()
-            .known_node(scylla_connection_string)
-            .compression("snappy")
-            .build()
+            SessionBuilder().known_node(scylla_connection_string).compression("snappy").build()
         )
         assert session_snappy is not None
 
         # Test None
         session_none = await (
-            SessionBuilder()
-            .known_node(scylla_connection_string)
-            .compression(None)
-            .build()
+            SessionBuilder().known_node(scylla_connection_string).compression(None).build()
         )
         assert session_none is not None
 
@@ -98,12 +83,14 @@ class TestSession:
 
     async def test_await_schema_agreement(self, session, test_keyspace):
         """Test schema agreement"""
-        await session.execute("""
+        await session.execute(
+            """
             CREATE TABLE IF NOT EXISTS test_schema (
                 id int PRIMARY KEY,
                 data text
             )
-        """)
+        """
+        )
 
         # Wait for schema agreement
         agreed = await session.await_schema_agreement()

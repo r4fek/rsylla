@@ -2,7 +2,7 @@
 Example demonstrating batch operations with rscylla
 """
 
-from rscylla import Session, Batch, ScyllaError
+from rscylla import Batch, ScyllaError, Session
 
 
 def main():
@@ -49,15 +49,15 @@ def main():
         batch = Batch("logged")
 
         # Add statements to batch
-        batch.append_statement("INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)")
-        batch.append_statement("INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)")
+        batch.append_statement(
+            "INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)"
+        )
+        batch.append_statement(
+            "INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)"
+        )
 
         # Configure batch
-        batch = (
-            batch
-            .with_consistency("QUORUM")
-            .set_idempotent(False)
-        )
+        batch = batch.with_consistency("QUORUM").set_idempotent(False)
 
         # Execute batch with multiple sets of values
         print("Executing batch operations...")
@@ -65,39 +65,49 @@ def main():
             batch,
             [
                 {"order_id": 1, "user_id": 100, "product_id": 1, "quantity": 2},
-                {"user_id": 100, "order_id": 1, "total_items": 2}
-            ]
+                {"user_id": 100, "order_id": 1, "total_items": 2},
+            ],
         )
         print("  Order 1 created")
 
         # Create another batch for different order
         batch2 = Batch("logged")
-        batch2.append_statement("INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)")
-        batch2.append_statement("INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)")
-        batch2.append_statement("INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)")
+        batch2.append_statement(
+            "INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)"
+        )
+        batch2.append_statement(
+            "INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)"
+        )
+        batch2.append_statement(
+            "INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)"
+        )
 
         session.batch(
             batch2,
             [
                 {"order_id": 2, "user_id": 100, "product_id": 1, "quantity": 1},
                 {"order_id": 2, "user_id": 100, "product_id": 2, "quantity": 3},
-                {"user_id": 100, "order_id": 2, "total_items": 4}
-            ]
+                {"user_id": 100, "order_id": 2, "total_items": 4},
+            ],
         )
         print("  Order 2 created")
 
         # Unlogged batch for better performance (no atomicity)
         print("\nCreating unlogged batch...")
         unlogged_batch = Batch("unlogged")
-        unlogged_batch.append_statement("INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)")
-        unlogged_batch.append_statement("INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)")
+        unlogged_batch.append_statement(
+            "INSERT INTO orders (order_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)"
+        )
+        unlogged_batch.append_statement(
+            "INSERT INTO user_orders (user_id, order_id, total_items) VALUES (?, ?, ?)"
+        )
 
         session.batch(
             unlogged_batch,
             [
                 {"order_id": 3, "user_id": 101, "product_id": 3, "quantity": 5},
-                {"user_id": 101, "order_id": 3, "total_items": 5}
-            ]
+                {"user_id": 101, "order_id": 3, "total_items": 5},
+            ],
         )
         print("  Order 3 created (unlogged)")
 

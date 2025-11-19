@@ -1,8 +1,10 @@
 """
 Tests for Batch operations
 """
+
 import pytest
-from rscylla import Session, Batch, ScyllaError
+
+from rscylla import Batch
 
 
 @pytest.mark.integration
@@ -15,10 +17,13 @@ class TestBatch:
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
 
-        await session.batch(batch, [
-            {"id": 500, "username": "batch1", "email": "batch1@example.com"},
-            {"id": 501, "username": "batch2", "email": "batch2@example.com"}
-        ])
+        await session.batch(
+            batch,
+            [
+                {"id": 500, "username": "batch1", "email": "batch1@example.com"},
+                {"id": 501, "username": "batch2", "email": "batch2@example.com"},
+            ],
+        )
 
         # Verify both inserts
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 500})
@@ -33,10 +38,13 @@ class TestBatch:
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
 
-        await session.batch(batch, [
-            {"id": 510, "username": "unlogged1", "email": "unlogged1@example.com"},
-            {"id": 511, "username": "unlogged2", "email": "unlogged2@example.com"}
-        ])
+        await session.batch(
+            batch,
+            [
+                {"id": 510, "username": "unlogged1", "email": "unlogged1@example.com"},
+                {"id": 511, "username": "unlogged2", "email": "unlogged2@example.com"},
+            ],
+        )
 
         # Verify inserts
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 510})
@@ -53,13 +61,16 @@ class TestBatch:
         batch.append_prepared(prepared)
         batch.append_prepared(prepared)
 
-        await session.batch(batch, [
-            {"id": 520, "username": "prep1", "email": "prep1@example.com"},
-            {"id": 521, "username": "prep2", "email": "prep2@example.com"}
-        ])
+        await session.batch(
+            batch,
+            [
+                {"id": 520, "username": "prep1", "email": "prep1@example.com"},
+                {"id": 521, "username": "prep2", "email": "prep2@example.com"},
+            ],
+        )
 
         # Verify
-        result = await session.execute("SELECT COUNT(*) FROM users")
+        _ = await session.execute("SELECT COUNT(*) FROM users")
         # Should have at least 2 rows
 
     async def test_batch_with_consistency(self, session, users_table):
@@ -68,9 +79,7 @@ class TestBatch:
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
         batch = batch.with_consistency("ONE")
 
-        await session.batch(batch, [
-            {"id": 530, "username": "cons1", "email": "cons1@example.com"}
-        ])
+        await session.batch(batch, [{"id": 530, "username": "cons1", "email": "cons1@example.com"}])
 
         # Verify
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 530})
@@ -79,15 +88,14 @@ class TestBatch:
     async def test_batch_with_timestamp(self, session, users_table):
         """Test batch with custom timestamp"""
         import time
+
         timestamp = int(time.time() * 1000000)
 
         batch = Batch("logged")
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
         batch = batch.with_timestamp(timestamp)
 
-        await session.batch(batch, [
-            {"id": 540, "username": "ts1", "email": "ts1@example.com"}
-        ])
+        await session.batch(batch, [{"id": 540, "username": "ts1", "email": "ts1@example.com"}])
 
         # Verify
         result = await session.execute("SELECT * FROM users WHERE id = ?", {"id": 540})
@@ -124,10 +132,13 @@ class TestBatch:
         batch.append_statement("INSERT INTO users (id, username, email) VALUES (?, ?, ?)")
         batch.append_prepared(prepared)
 
-        await session.batch(batch, [
-            {"id": 550, "username": "mixed1", "email": "mixed1@example.com"},
-            {"id": 551, "username": "mixed2", "email": "mixed2@example.com"}
-        ])
+        await session.batch(
+            batch,
+            [
+                {"id": 550, "username": "mixed1", "email": "mixed1@example.com"},
+                {"id": 551, "username": "mixed2", "email": "mixed2@example.com"},
+            ],
+        )
 
         # Verify both
         result = await session.execute("SELECT * FROM users WHERE id IN (550, 551)")

@@ -6,14 +6,14 @@ using the official Rust driver.
 """
 
 from ._rscylla import (
-    Session,
-    SessionBuilder,
-    Query,
+    Batch,
     PreparedStatement,
+    Query,
     QueryResult,
     Row,
-    Batch,
     ScyllaError,
+    Session,
+    SessionBuilder,
 )
 
 __version__ = "0.1.0"

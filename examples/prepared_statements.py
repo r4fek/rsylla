@@ -2,7 +2,7 @@
 Example demonstrating prepared statements with rscylla
 """
 
-from rscylla import Session, ScyllaError
+from rscylla import ScyllaError, Session
 
 
 def main():
@@ -38,20 +38,14 @@ def main():
             "INSERT INTO products (id, name, price, quantity) VALUES (?, ?, ?, ?)"
         )
 
-        select_prepared = session.prepare(
-            "SELECT * FROM products WHERE id = ?"
-        )
+        select_prepared = session.prepare("SELECT * FROM products WHERE id = ?")
 
         update_prepared = session.prepare(
             "UPDATE products SET quantity = quantity + ? WHERE id = ?"
         )
 
         # Configure prepared statement
-        insert_prepared = (
-            insert_prepared
-            .with_consistency("QUORUM")
-            .set_idempotent(True)
-        )
+        insert_prepared = insert_prepared.with_consistency("QUORUM").set_idempotent(True)
 
         # Insert data using prepared statement
         print("\nInserting products using prepared statements...")

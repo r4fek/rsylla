@@ -1,16 +1,19 @@
 """
 Pytest configuration and fixtures for rscylla tests
 """
-import pytest
-import time
-import sys
+
 import os
+import sys
+import time
+
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from rscylla import Session, SessionBuilder
+
     RSCYLLA_AVAILABLE = True
 except ImportError:
     RSCYLLA_AVAILABLE = False
@@ -62,7 +65,9 @@ async def wait_for_scylla(scylla_connection_string):
                 print(f"\nWaiting for ScyllaDB... (attempt {attempt + 1}/{max_retries}): {e}")
                 time.sleep(retry_delay)
             else:
-                pytest.fail(f"ScyllaDB not available after {max_retries} attempts at {scylla_connection_string}")
+                pytest.fail(
+                    f"ScyllaDB not available after {max_retries} attempts at {scylla_connection_string}"
+                )
 
     return False
 
@@ -81,10 +86,12 @@ async def test_keyspace(session):
     keyspace_name = "test_rscylla"
 
     # Create keyspace
-    await session.execute(f"""
+    await session.execute(
+        f"""
         CREATE KEYSPACE IF NOT EXISTS {keyspace_name}
         WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}
-    """)
+    """
+    )
 
     # Use keyspace
     await session.use_keyspace(keyspace_name, False)
@@ -104,7 +111,8 @@ async def test_keyspace(session):
 @pytest.fixture(scope="function")
 async def users_table(session, test_keyspace):
     """Create a users table for testing"""
-    await session.execute("""
+    await session.execute(
+        """
         CREATE TABLE IF NOT EXISTS users (
             id int PRIMARY KEY,
             username text,
@@ -113,7 +121,8 @@ async def users_table(session, test_keyspace):
             is_active boolean,
             created_at timestamp
         )
-    """)
+    """
+    )
 
     await session.await_schema_agreement()
 
@@ -132,15 +141,36 @@ async def sample_users(session, users_table):
     import time
 
     users = [
-        {"id": 1, "username": "alice", "email": "alice@example.com", "age": 30, "is_active": True, "created_at": int(time.time() * 1000)},
-        {"id": 2, "username": "bob", "email": "bob@example.com", "age": 25, "is_active": True, "created_at": int(time.time() * 1000)},
-        {"id": 3, "username": "charlie", "email": "charlie@example.com", "age": 35, "is_active": False, "created_at": int(time.time() * 1000)},
+        {
+            "id": 1,
+            "username": "alice",
+            "email": "alice@example.com",
+            "age": 30,
+            "is_active": True,
+            "created_at": int(time.time() * 1000),
+        },
+        {
+            "id": 2,
+            "username": "bob",
+            "email": "bob@example.com",
+            "age": 25,
+            "is_active": True,
+            "created_at": int(time.time() * 1000),
+        },
+        {
+            "id": 3,
+            "username": "charlie",
+            "email": "charlie@example.com",
+            "age": 35,
+            "is_active": False,
+            "created_at": int(time.time() * 1000),
+        },
     ]
 
     for user in users:
         await session.execute(
             "INSERT INTO users (id, username, email, age, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-            user
+            user,
         )
 
     yield users

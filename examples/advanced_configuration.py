@@ -2,7 +2,7 @@
 Example demonstrating advanced session configuration with rscylla
 """
 
-from rscylla import SessionBuilder, Query, ScyllaError
+from rscylla import Query, ScyllaError, SessionBuilder
 
 
 def main():
@@ -56,7 +56,9 @@ def main():
         # Create query with advanced options
         print("\nExecuting query with advanced options...")
         query = (
-            Query("INSERT INTO sensors (sensor_id, timestamp, temperature, humidity) VALUES (?, ?, ?, ?)")
+            Query(
+                "INSERT INTO sensors (sensor_id, timestamp, temperature, humidity) VALUES (?, ?, ?, ?)"
+            )
             .with_consistency("LOCAL_QUORUM")
             .with_serial_consistency("LOCAL_SERIAL")
             .with_timestamp(1234567890000)
@@ -71,12 +73,7 @@ def main():
         # Execute query
         result = session.query(
             query,
-            {
-                "sensor_id": 1,
-                "timestamp": 1234567890000,
-                "temperature": 22.5,
-                "humidity": 45.0
-            }
+            {"sensor_id": 1, "timestamp": 1234567890000, "temperature": 22.5, "humidity": 45.0},
         )
 
         # Check tracing
@@ -91,8 +88,8 @@ def main():
                     "sensor_id": 1,
                     "timestamp": 1234567890000 + i * 1000,
                     "temperature": 20.0 + i * 0.5,
-                    "humidity": 40.0 + i * 2.0
-                }
+                    "humidity": 40.0 + i * 2.0,
+                },
             )
 
         # Query with paging

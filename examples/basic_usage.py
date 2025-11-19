@@ -2,7 +2,7 @@
 Basic usage example for rscylla
 """
 
-from rscylla import Session, ScyllaError
+from rscylla import ScyllaError, Session
 
 
 def main():
@@ -44,17 +44,17 @@ def main():
         print("Inserting data...")
         session.execute(
             "INSERT INTO users (id, name, email, age) VALUES (?, ?, ?, ?)",
-            {"id": 1, "name": "Alice", "email": "alice@example.com", "age": 30}
+            {"id": 1, "name": "Alice", "email": "alice@example.com", "age": 30},
         )
 
         session.execute(
             "INSERT INTO users (id, name, email, age) VALUES (?, ?, ?, ?)",
-            {"id": 2, "name": "Bob", "email": "bob@example.com", "age": 25}
+            {"id": 2, "name": "Bob", "email": "bob@example.com", "age": 25},
         )
 
         session.execute(
             "INSERT INTO users (id, name, email, age) VALUES (?, ?, ?, ?)",
-            {"id": 3, "name": "Charlie", "email": "charlie@example.com", "age": 35}
+            {"id": 3, "name": "Charlie", "email": "charlie@example.com", "age": 35},
         )
 
         # Query data

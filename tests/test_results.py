@@ -1,8 +1,8 @@
 """
 Tests for QueryResult and Row
 """
+
 import pytest
-from rscylla import Session
 
 
 @pytest.mark.integration
