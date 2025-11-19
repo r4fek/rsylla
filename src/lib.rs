@@ -1,17 +1,17 @@
 use pyo3::prelude::*;
 
+mod batch;
 mod error;
-mod session;
 mod query;
 mod result;
-mod batch;
+mod session;
 mod types;
 
-use error::ScyllaError;
-use session::{Session, SessionBuilder};
-use query::{Query, PreparedStatement};
-use result::{QueryResult, Row};
 use batch::Batch;
+use error::ScyllaError;
+use query::{PreparedStatement, Query};
+use result::{QueryResult, Row};
+use session::{Session, SessionBuilder};
 
 #[pymodule]
 fn _rscylla(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {

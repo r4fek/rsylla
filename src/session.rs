@@ -5,11 +5,11 @@ use scylla::{Session as ScyllaSession, SessionBuilder as ScyllaSessionBuilder};
 use std::sync::Arc;
 use std::time::Duration;
 
-use crate::query::{Query, PreparedStatement};
-use crate::result::QueryResult;
 use crate::batch::Batch;
-use crate::types::{py_dict_to_values, py_dict_to_serialized_values};
 use crate::error::{query_error_to_py, session_error_to_py};
+use crate::query::{PreparedStatement, Query};
+use crate::result::QueryResult;
+use crate::types::{py_dict_to_serialized_values, py_dict_to_values};
 
 #[pyclass]
 #[derive(Clone)]
@@ -37,21 +37,29 @@ impl SessionBuilder {
     }
 
     pub fn use_keyspace(&mut self, keyspace_name: &str, case_sensitive: bool) -> PyResult<Self> {
-        self.builder = self.builder.clone().use_keyspace(keyspace_name, case_sensitive);
+        self.builder = self
+            .builder
+            .clone()
+            .use_keyspace(keyspace_name, case_sensitive);
         Ok(self.clone())
     }
 
     pub fn connection_timeout(&mut self, duration_ms: u64) -> PyResult<Self> {
-        self.builder = self.builder.clone()
+        self.builder = self
+            .builder
+            .clone()
             .connection_timeout(Duration::from_millis(duration_ms));
         Ok(self.clone())
     }
 
     pub fn pool_size(&mut self, size: usize) -> PyResult<Self> {
         use std::num::NonZeroUsize;
-        let non_zero_size = NonZeroUsize::new(size)
-            .ok_or_else(|| PyErr::new::<pyo3::exceptions::PyValueError, _>("Pool size must be greater than 0"))?;
-        self.builder = self.builder.clone()
+        let non_zero_size = NonZeroUsize::new(size).ok_or_else(|| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>("Pool size must be greater than 0")
+        })?;
+        self.builder = self
+            .builder
+            .clone()
             .pool_size(scylla::transport::session::PoolSize::PerHost(non_zero_size));
         Ok(self.clone())
     }
@@ -67,9 +75,11 @@ impl SessionBuilder {
             Some("lz4") => Some(scylla::transport::Compression::Lz4),
             Some("snappy") => Some(scylla::transport::Compression::Snappy),
             None => None,
-            _ => return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                "Invalid compression type. Must be 'lz4', 'snappy', or None"
-            )),
+            _ => {
+                return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
+                    "Invalid compression type. Must be 'lz4', 'snappy', or None",
+                ))
+            }
         };
         self.builder = self.builder.clone().compression(comp);
         Ok(self.clone())
@@ -128,7 +138,9 @@ impl Session {
         let query_str = query.to_string();
 
         future_into_py(py, async move {
-            let result = session.query_unpaged(query_str, serialized_values).await
+            let result = session
+                .query_unpaged(query_str, serialized_values)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(QueryResult::new(result))
@@ -148,7 +160,9 @@ impl Session {
         let scylla_query = query.inner.clone();
 
         future_into_py(py, async move {
-            let result = session.query_unpaged(scylla_query, serialized_values).await
+            let result = session
+                .query_unpaged(scylla_query, serialized_values)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(QueryResult::new(result))
@@ -160,7 +174,9 @@ impl Session {
         let query_str = query.to_string();
 
         future_into_py(py, async move {
-            let prepared = session.prepare(query_str).await
+            let prepared = session
+                .prepare(query_str)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(PreparedStatement {
@@ -182,7 +198,9 @@ impl Session {
         let prep = prepared.prepared.clone();
 
         future_into_py(py, async move {
-            let result = session.execute_unpaged(&prep, serialized_values).await
+            let result = session
+                .execute_unpaged(&prep, serialized_values)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(QueryResult::new(result))
@@ -209,7 +227,9 @@ impl Session {
         }
 
         future_into_py(py, async move {
-            let result = session.batch(&scylla_batch, batch_values).await
+            let result = session
+                .batch(&scylla_batch, batch_values)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(QueryResult::new(result))
@@ -226,7 +246,9 @@ impl Session {
         let ks = keyspace_name.to_string();
 
         future_into_py(py, async move {
-            session.use_keyspace(ks, case_sensitive).await
+            session
+                .use_keyspace(ks, case_sensitive)
+                .await
                 .map_err(query_error_to_py)?;
 
             Ok(())
@@ -237,7 +259,9 @@ impl Session {
         let session = self.session.clone();
 
         future_into_py(py, async move {
-            session.await_schema_agreement().await
+            session
+                .await_schema_agreement()
+                .await
                 .map_err(query_error_to_py)?;
 
             // Return True when schema agreement is reached

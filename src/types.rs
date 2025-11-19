@@ -1,11 +1,11 @@
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList, PyBytes};
+use pyo3::types::{PyBytes, PyDict, PyList};
 use scylla::frame::response::result::CqlValue;
-use scylla::serialize::value::SerializeValue;
+use scylla::frame::value::LegacySerializedValues;
 use scylla::serialize::row::SerializedValues;
+use scylla::serialize::value::SerializeValue;
 use scylla::serialize::writers::WrittenCellProof;
 use scylla::serialize::CellWriter;
-use scylla::frame::value::LegacySerializedValues;
 use std::collections::HashMap;
 
 pub fn cql_value_to_py(py: Python, value: &CqlValue) -> PyResult<PyObject> {
@@ -40,10 +40,7 @@ pub fn cql_value_to_py(py: Python, value: &CqlValue) -> PyResult<PyObject> {
         CqlValue::Map(map) => {
             let py_dict = PyDict::new_bound(py);
             for (key, val) in map {
-                py_dict.set_item(
-                    cql_value_to_py(py, key)?,
-                    cql_value_to_py(py, val)?
-                )?;
+                py_dict.set_item(cql_value_to_py(py, key)?, cql_value_to_py(py, val)?)?;
             }
             Ok(py_dict.to_object(py))
         }
@@ -140,9 +137,10 @@ pub fn py_to_cql_value(obj: &Bound<'_, PyAny>) -> PyResult<CqlValue> {
         return Ok(CqlValue::Map(map));
     }
 
-    Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(
-        format!("Cannot convert Python type {:?} to CQL value", obj.get_type())
-    ))
+    Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(format!(
+        "Cannot convert Python type {:?} to CQL value",
+        obj.get_type()
+    )))
 }
 
 pub fn py_dict_to_values(dict: Option<&Bound<'_, PyDict>>) -> PyResult<HashMap<String, CqlValue>> {
@@ -158,7 +156,9 @@ pub fn py_dict_to_values(dict: Option<&Bound<'_, PyDict>>) -> PyResult<HashMap<S
     Ok(values)
 }
 
-pub fn py_dict_to_serialized_values(dict: Option<&Bound<'_, PyDict>>) -> PyResult<LegacySerializedValues> {
+pub fn py_dict_to_serialized_values(
+    dict: Option<&Bound<'_, PyDict>>,
+) -> PyResult<LegacySerializedValues> {
     let mut serialized = LegacySerializedValues::new();
 
     if let Some(d) = dict {
@@ -169,51 +169,94 @@ pub fn py_dict_to_serialized_values(dict: Option<&Bound<'_, PyDict>>) -> PyResul
         for key_obj_result in keys.iter()? {
             let key_obj = key_obj_result?;
             let key_str = key_obj.extract::<String>()?;
-            let val = d.get_item(&key_str)?
-                .ok_or_else(|| PyErr::new::<pyo3::exceptions::PyKeyError, _>(
-                    format!("Key '{}' not found", key_str)
-                ))?;
+            let val = d.get_item(&key_str)?.ok_or_else(|| {
+                PyErr::new::<pyo3::exceptions::PyKeyError, _>(format!(
+                    "Key '{}' not found",
+                    key_str
+                ))
+            })?;
 
             // Serialize based on Python type
             if val.is_none() {
-                serialized.add_named_value(&key_str, &Option::<i32>::None)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                serialized
+                    .add_named_value(&key_str, &Option::<i32>::None)
+                    .map_err(|e| {
+                        PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                            "Serialization error: {}",
+                            e
+                        ))
+                    })?;
             } else if let Ok(b) = val.extract::<bool>() {
-                serialized.add_named_value(&key_str, &b)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                serialized.add_named_value(&key_str, &b).map_err(|e| {
+                    PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                        "Serialization error: {}",
+                        e
+                    ))
+                })?;
             } else if let Ok(i) = val.extract::<i64>() {
                 // Use i32 for small integers, i64 for large ones
                 // This works for most cases; bigint/counter columns may need explicit i64 via prepared statements
                 if i >= i32::MIN as i64 && i <= i32::MAX as i64 {
-                    serialized.add_named_value(&key_str, &(i as i32))
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                    serialized
+                        .add_named_value(&key_str, &(i as i32))
+                        .map_err(|e| {
+                            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                                "Serialization error: {}",
+                                e
+                            ))
+                        })?;
                 } else {
-                    serialized.add_named_value(&key_str, &i)
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                    serialized.add_named_value(&key_str, &i).map_err(|e| {
+                        PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                            "Serialization error: {}",
+                            e
+                        ))
+                    })?;
                 }
             } else if let Ok(f) = val.extract::<f64>() {
                 // Use f32 for normal floats, f64 for doubles
                 let f32_val = f as f32;
-                if f.is_finite() && f.abs() <= f32::MAX as f64 && (f32_val as f64 - f).abs() < 1e-6 {
-                    serialized.add_named_value(&key_str, &f32_val)
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                if f.is_finite() && f.abs() <= f32::MAX as f64 && (f32_val as f64 - f).abs() < 1e-6
+                {
+                    serialized
+                        .add_named_value(&key_str, &f32_val)
+                        .map_err(|e| {
+                            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                                "Serialization error: {}",
+                                e
+                            ))
+                        })?;
                 } else {
-                    serialized.add_named_value(&key_str, &f)
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                    serialized.add_named_value(&key_str, &f).map_err(|e| {
+                        PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                            "Serialization error: {}",
+                            e
+                        ))
+                    })?;
                 }
             } else if let Ok(s) = val.extract::<String>() {
-                serialized.add_named_value(&key_str, &s)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                serialized.add_named_value(&key_str, &s).map_err(|e| {
+                    PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                        "Serialization error: {}",
+                        e
+                    ))
+                })?;
             } else if let Ok(b) = val.extract::<Vec<u8>>() {
-                serialized.add_named_value(&key_str, &b)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                serialized.add_named_value(&key_str, &b).map_err(|e| {
+                    PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                        "Serialization error: {}",
+                        e
+                    ))
+                })?;
             } else if let Ok(dict) = val.downcast::<PyDict>() {
                 // Handle nested dict (map type) - try String->String first
                 let mut string_map: HashMap<String, String> = HashMap::new();
                 let mut all_strings = true;
 
                 for (k, v) in dict.iter() {
-                    if let (Ok(map_key), Ok(map_value)) = (k.extract::<String>(), v.extract::<String>()) {
+                    if let (Ok(map_key), Ok(map_value)) =
+                        (k.extract::<String>(), v.extract::<String>())
+                    {
                         string_map.insert(map_key, map_value);
                     } else {
                         all_strings = false;
@@ -222,18 +265,32 @@ pub fn py_dict_to_serialized_values(dict: Option<&Bound<'_, PyDict>>) -> PyResul
                 }
 
                 if all_strings && !string_map.is_empty() {
-                    serialized.add_named_value(&key_str, &string_map)
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                    serialized
+                        .add_named_value(&key_str, &string_map)
+                        .map_err(|e| {
+                            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                                "Serialization error: {}",
+                                e
+                            ))
+                        })?;
                 } else {
                     // Try i64 map
                     let mut int_map: HashMap<String, i64> = HashMap::new();
                     for (k, v) in dict.iter() {
-                        if let (Ok(map_key), Ok(map_value)) = (k.extract::<String>(), v.extract::<i64>()) {
+                        if let (Ok(map_key), Ok(map_value)) =
+                            (k.extract::<String>(), v.extract::<i64>())
+                        {
                             int_map.insert(map_key, map_value);
                         }
                     }
-                    serialized.add_named_value(&key_str, &int_map)
-                        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                    serialized
+                        .add_named_value(&key_str, &int_map)
+                        .map_err(|e| {
+                            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                                "Serialization error: {}",
+                                e
+                            ))
+                        })?;
                 }
             } else if let Ok(list) = val.downcast::<PyList>() {
                 let mut vec_values: Vec<String> = Vec::new();
@@ -242,12 +299,20 @@ pub fn py_dict_to_serialized_values(dict: Option<&Bound<'_, PyDict>>) -> PyResul
                         vec_values.push(s);
                     }
                 }
-                serialized.add_named_value(&key_str, &vec_values)
-                    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Serialization error: {}", e)))?;
+                serialized
+                    .add_named_value(&key_str, &vec_values)
+                    .map_err(|e| {
+                        PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                            "Serialization error: {}",
+                            e
+                        ))
+                    })?;
             } else {
-                return Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(
-                    format!("Cannot serialize Python type for key '{}': {:?}", key_str, val.get_type())
-                ));
+                return Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(format!(
+                    "Cannot serialize Python type for key '{}': {:?}",
+                    key_str,
+                    val.get_type()
+                )));
             }
         }
     }

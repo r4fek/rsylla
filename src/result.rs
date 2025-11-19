@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
-use scylla::frame::response::result::{Row as ScyllaRow, CqlValue};
+use scylla::frame::response::result::{CqlValue, Row as ScyllaRow};
 use scylla::QueryResult as ScyllaQueryResult;
 
 use crate::types::cql_value_to_py;
@@ -48,13 +48,14 @@ impl QueryResult {
             if rows.len() == 1 {
                 Ok(Row::new(&rows[0]))
             } else {
-                Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                    format!("Expected single row, got {} rows", rows.len())
-                ))
+                Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                    "Expected single row, got {} rows",
+                    rows.len()
+                )))
             }
         } else {
             Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                "No rows returned"
+                "No rows returned",
             ))
         }
     }
@@ -144,7 +145,7 @@ pub struct Row {
 impl Row {
     pub fn new(row: &ScyllaRow) -> Self {
         Row {
-            columns: row.columns.clone()
+            columns: row.columns.clone(),
         }
     }
 }
@@ -186,9 +187,10 @@ impl Row {
                 None => Ok(py.None()),
             }
         } else {
-            Err(PyErr::new::<pyo3::exceptions::PyIndexError, _>(
-                format!("Column index {} out of range", index)
-            ))
+            Err(PyErr::new::<pyo3::exceptions::PyIndexError, _>(format!(
+                "Column index {} out of range",
+                index
+            )))
         }
     }
 
@@ -210,9 +212,10 @@ impl Row {
                 None => Ok(py.None()),
             }
         } else {
-            Err(PyErr::new::<pyo3::exceptions::PyIndexError, _>(
-                format!("Column index {} out of range", index)
-            ))
+            Err(PyErr::new::<pyo3::exceptions::PyIndexError, _>(format!(
+                "Column index {} out of range",
+                index
+            )))
         }
     }
 

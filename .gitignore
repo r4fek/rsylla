@@ -46,6 +46,7 @@ venv.bak/
 .DS_Store
 *.sublime-project
 *.sublime-workspace
+.claude/
 
 # Testing
 .pytest_cache/

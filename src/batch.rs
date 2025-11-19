@@ -2,7 +2,7 @@ use pyo3::prelude::*;
 use scylla::batch::Batch as ScyllaBatch;
 use scylla::statement::Consistency;
 
-use crate::query::{Query, PreparedStatement};
+use crate::query::{PreparedStatement, Query};
 
 #[pyclass]
 #[derive(Clone)]
@@ -19,9 +19,11 @@ impl Batch {
             "logged" => scylla::batch::BatchType::Logged,
             "unlogged" => scylla::batch::BatchType::Unlogged,
             "counter" => scylla::batch::BatchType::Counter,
-            _ => return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                "Invalid batch type. Must be 'logged', 'unlogged', or 'counter'"
-            )),
+            _ => {
+                return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
+                    "Invalid batch type. Must be 'logged', 'unlogged', or 'counter'",
+                ))
+            }
         };
 
         Ok(Batch {
@@ -97,9 +99,10 @@ fn parse_consistency(consistency: &str) -> PyResult<Consistency> {
         "LOCAL_QUORUM" | "LOCALQUORUM" => Ok(Consistency::LocalQuorum),
         "EACH_QUORUM" | "EACHQUORUM" => Ok(Consistency::EachQuorum),
         "LOCAL_ONE" | "LOCALONE" => Ok(Consistency::LocalOne),
-        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            format!("Invalid consistency level: {}", consistency)
-        )),
+        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+            "Invalid consistency level: {}",
+            consistency
+        ))),
     }
 }
 
@@ -107,8 +110,9 @@ fn parse_serial_consistency(consistency: &str) -> PyResult<scylla::statement::Se
     match consistency.to_uppercase().as_str() {
         "SERIAL" => Ok(scylla::statement::SerialConsistency::Serial),
         "LOCAL_SERIAL" | "LOCALSERIAL" => Ok(scylla::statement::SerialConsistency::LocalSerial),
-        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            format!("Invalid serial consistency level: {}", consistency)
-        )),
+        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+            "Invalid serial consistency level: {}",
+            consistency
+        ))),
     }
 }

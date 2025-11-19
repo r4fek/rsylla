@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
-use scylla::query::Query as ScyllaQuery;
 use scylla::prepared_statement::PreparedStatement as ScyllaPreparedStatement;
+use scylla::query::Query as ScyllaQuery;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -45,7 +45,8 @@ impl Query {
     }
 
     pub fn with_timeout(&mut self, timeout_ms: u64) -> PyResult<Self> {
-        self.inner.set_request_timeout(Some(Duration::from_millis(timeout_ms)));
+        self.inner
+            .set_request_timeout(Some(Duration::from_millis(timeout_ms)));
         Ok(self.clone())
     }
 
@@ -149,9 +150,10 @@ fn parse_consistency(consistency: &str) -> PyResult<scylla::statement::Consisten
         "LOCAL_QUORUM" | "LOCALQUORUM" => Ok(scylla::statement::Consistency::LocalQuorum),
         "EACH_QUORUM" | "EACHQUORUM" => Ok(scylla::statement::Consistency::EachQuorum),
         "LOCAL_ONE" | "LOCALONE" => Ok(scylla::statement::Consistency::LocalOne),
-        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            format!("Invalid consistency level: {}", consistency)
-        )),
+        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+            "Invalid consistency level: {}",
+            consistency
+        ))),
     }
 }
 
@@ -159,8 +161,9 @@ fn parse_serial_consistency(consistency: &str) -> PyResult<scylla::statement::Se
     match consistency.to_uppercase().as_str() {
         "SERIAL" => Ok(scylla::statement::SerialConsistency::Serial),
         "LOCAL_SERIAL" | "LOCALSERIAL" => Ok(scylla::statement::SerialConsistency::LocalSerial),
-        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            format!("Invalid serial consistency level: {}", consistency)
-        )),
+        _ => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+            "Invalid serial consistency level: {}",
+            consistency
+        ))),
     }
 }

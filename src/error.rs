@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
 use pyo3::create_exception;
+use pyo3::prelude::*;
 
 create_exception!(rscylla, ScyllaError, pyo3::exceptions::PyException);
 
