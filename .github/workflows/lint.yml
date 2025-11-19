@@ -61,6 +61,9 @@ jobs:
     - name: Lint with Ruff
       run: ruff check python/ examples/ tests/
 
+    - name: Check formatting with Ruff
+      run: ruff format --check python/ examples/ tests/
+
     - name: Type check with mypy
       run: mypy python/ --ignore-missing-imports
       continue-on-error: true
