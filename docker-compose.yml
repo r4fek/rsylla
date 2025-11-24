@@ -2,7 +2,7 @@ version: '3'
 
 services:
   scylla:
-    image: scylladb/scylla:5.2
+    image: scylladb/scylla:6.2.3
     container_name: rsylla-test-scylla
     ports:
       - "9042:9042"

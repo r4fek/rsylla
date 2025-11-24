@@ -1,10 +1,20 @@
 # rsylla
 
-High-performance Python bindings for ScyllaDB/Cassandra using the official [scylla-rust-driver](https://github.com/scylladb/scylla-rust-driver).
+**The fastest Python driver for ScyllaDB.** High-performance Python bindings using the official [scylla-rust-driver](https://github.com/scylladb/scylla-rust-driver).
+
+## Performance
+
+rsylla is **~3.9x faster** than the DataStax cassandra-driver and **~1.2x faster** than acsylla:
+
+- **85,000+ ops/sec** for read/write operations
+- **Sub-millisecond latencies** (0.37-0.43ms average)
+- **Zero-copy design** for efficient data handling
+
+**[See detailed benchmark results →](BENCHMARKS.md)**
 
 ## Features
 
-- **High Performance**: Built on top of the official Rust driver for ScyllaDB
+- **Fastest Performance**: Built on top of the official Rust driver for ScyllaDB
 - **Full API Coverage**: Every function/method from the Rust driver has a Python equivalent
 - **Type Hints**: Complete type annotations for better IDE support
 - **Async Runtime**: Efficient async operations handled by Tokio runtime
@@ -31,20 +41,24 @@ maturin develop --release
 ## Quick Start
 
 ```python
+import asyncio
 from rsylla import Session
 
-# Connect to ScyllaDB cluster
-session = Session.connect(["127.0.0.1:9042"])
+async def main():
+    # Connect to ScyllaDB cluster
+    session = await Session.connect(["127.0.0.1:9042"])
 
-# Execute a query
-result = session.execute(
-    "SELECT * FROM system.local WHERE key = ?",
-    {"key": "local"}
-)
+    # Execute a query
+    result = await session.execute(
+        "SELECT * FROM system.local WHERE key = ?",
+        {"key": "local"}
+    )
 
-# Iterate over rows
-for row in result:
-    print(row.columns())
+    # Iterate over rows
+    for row in result:
+        print(row.columns())
+
+asyncio.run(main())
 ```
 
 ## Usage Examples
@@ -52,171 +66,224 @@ for row in result:
 ### Creating a Session
 
 ```python
+import asyncio
 from rsylla import SessionBuilder
 
-# Using SessionBuilder for advanced configuration
-session = (
-    SessionBuilder()
-    .known_nodes(["127.0.0.1:9042", "127.0.0.2:9042"])
-    .user("username", "password")
-    .use_keyspace("my_keyspace", case_sensitive=False)
-    .connection_timeout(5000)  # 5 seconds
-    .pool_size(10)
-    .compression("lz4")
-    .tcp_nodelay(True)
-    .build()
-)
+async def main():
+    # Using SessionBuilder for advanced configuration
+    session = await (
+        SessionBuilder()
+        .known_nodes(["127.0.0.1:9042", "127.0.0.2:9042"])
+        .user("username", "password")
+        .use_keyspace("my_keyspace", case_sensitive=False)
+        .connection_timeout(5000)  # 5 seconds
+        .pool_size(10)
+        .compression("lz4")
+        .tcp_nodelay(True)
+        .build()
+    )
+
+asyncio.run(main())
 ```
 
 ### Executing Queries
 
 ```python
-# Simple query
-result = session.execute("SELECT * FROM users")
+import asyncio
+from rsylla import Session
 
-# Query with parameters
-result = session.execute(
-    "SELECT * FROM users WHERE id = ?",
-    {"id": 123}
-)
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
 
-# Get first row
-row = result.first_row()
-if row:
-    print(row.columns())
+    # Simple query
+    result = await session.execute("SELECT * FROM users")
 
-# Get single row (raises exception if not exactly one row)
-row = result.single_row()
+    # Query with parameters
+    result = await session.execute(
+        "SELECT * FROM users WHERE id = ?",
+        {"id": 123}
+    )
 
-# Iterate over all rows
-for row in result:
-    print(row[0], row[1], row[2])
+    # Get first row
+    row = result.first_row()
+    if row:
+        print(row.columns())
+
+    # Get single row (raises exception if not exactly one row)
+    row = result.single_row()
+
+    # Iterate over all rows
+    for row in result:
+        print(row[0], row[1], row[2])
+
+asyncio.run(main())
 ```
 
 ### Using Query Objects
 
 ```python
-from rsylla import Query
+import asyncio
+from rsylla import Session, Query
 
-# Create a query with configuration
-query = (
-    Query("SELECT * FROM users WHERE id = ?")
-    .with_consistency("QUORUM")
-    .with_page_size(1000)
-    .with_timeout(10000)
-    .with_tracing(True)
-)
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
 
-result = session.query(query, {"id": 123})
+    # Create a query with configuration
+    query = (
+        Query("SELECT * FROM users WHERE id = ?")
+        .with_consistency("QUORUM")
+        .with_page_size(1000)
+        .with_timeout(10000)
+        .with_tracing(True)
+    )
 
-# Check tracing info
-if result.tracing_id():
-    print(f"Trace ID: {result.tracing_id()}")
+    result = await session.query(query, {"id": 123})
+
+    # Check tracing info
+    if result.tracing_id():
+        print(f"Trace ID: {result.tracing_id()}")
+
+asyncio.run(main())
 ```
 
 ### Prepared Statements
 
 ```python
-# Prepare a statement
-prepared = session.prepare("INSERT INTO users (id, name, email) VALUES (?, ?, ?)")
+import asyncio
+from rsylla import Session
 
-# Execute prepared statement
-result = session.execute_prepared(
-    prepared,
-    {"id": 1, "name": "John Doe", "email": "john@example.com"}
-)
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
 
-# Prepared statements with configuration
-prepared = (
-    prepared
-    .with_consistency("LOCAL_QUORUM")
-    .with_serial_consistency("SERIAL")
-)
+    # Prepare a statement
+    prepared = await session.prepare("INSERT INTO users (id, name, email) VALUES (?, ?, ?)")
 
-result = session.execute_prepared(prepared, {"id": 2, "name": "Jane", "email": "jane@example.com"})
+    # Execute prepared statement
+    result = await session.execute_prepared(
+        prepared,
+        {"id": 1, "name": "John Doe", "email": "john@example.com"}
+    )
+
+    # Prepared statements with configuration
+    prepared = (
+        prepared
+        .with_consistency("LOCAL_QUORUM")
+        .with_serial_consistency("SERIAL")
+    )
+
+    result = await session.execute_prepared(prepared, {"id": 2, "name": "Jane", "email": "jane@example.com"})
+
+asyncio.run(main())
 ```
 
 ### Batch Operations
 
 ```python
-from rsylla import Batch
+import asyncio
+from rsylla import Session, Batch
 
-# Create a batch
-batch = Batch("logged")  # or "unlogged" or "counter"
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
 
-# Add statements to batch
-batch.append_statement("INSERT INTO users (id, name) VALUES (?, ?)")
-batch.append_statement("INSERT INTO users (id, name) VALUES (?, ?)")
+    # Create a batch
+    batch = Batch("logged")  # or "unlogged" or "counter"
 
-# Configure batch
-batch = (
-    batch
-    .with_consistency("QUORUM")
-    .with_timestamp(1234567890)
-)
+    # Add statements to batch
+    batch.append_statement("INSERT INTO users (id, name) VALUES (?, ?)")
+    batch.append_statement("INSERT INTO users (id, name) VALUES (?, ?)")
 
-# Execute batch with values for each statement
-result = session.batch(
-    batch,
-    [
-        {"id": 1, "name": "User 1"},
-        {"id": 2, "name": "User 2"}
-    ]
-)
+    # Configure batch
+    batch = (
+        batch
+        .with_consistency("QUORUM")
+        .with_timestamp(1234567890)
+    )
+
+    # Execute batch with values for each statement
+    result = await session.batch(
+        batch,
+        [
+            {"id": 1, "name": "User 1"},
+            {"id": 2, "name": "User 2"}
+        ]
+    )
+
+asyncio.run(main())
 ```
 
 ### Working with Results
 
 ```python
-result = session.execute("SELECT * FROM users")
+import asyncio
+from rsylla import Session
 
-# Get all rows
-rows = result.rows()
-print(f"Found {len(rows)} rows")
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
+    result = await session.execute("SELECT * FROM users")
 
-# Get rows as dictionaries
-rows_dict = result.rows_typed()
-for row_dict in rows_dict:
-    print(row_dict)
+    # Get all rows
+    rows = result.rows()
+    print(f"Found {len(rows)} rows")
 
-# Get column specifications
-col_specs = result.col_specs()
-for spec in col_specs:
-    print(f"Column: {spec['name']}, Type: {spec['typ']}")
+    # Get rows as dictionaries
+    rows_dict = result.rows_typed()
+    for row_dict in rows_dict:
+        print(row_dict)
 
-# Check for warnings
-if result.warnings():
-    print("Warnings:", result.warnings())
+    # Get column specifications
+    col_specs = result.col_specs()
+    for spec in col_specs:
+        print(f"Column: {spec['name']}, Type: {spec['typ']}")
 
-# Boolean check
-if result:
-    print("Query returned rows")
+    # Check for warnings
+    if result.warnings():
+        print("Warnings:", result.warnings())
+
+    # Boolean check
+    if result:
+        print("Query returned rows")
+
+asyncio.run(main())
 ```
 
 ### Keyspace Operations
 
 ```python
-# Change keyspace
-session.use_keyspace("another_keyspace", case_sensitive=False)
+import asyncio
+from rsylla import Session
 
-# Get current keyspace
-current_ks = session.get_keyspace()
-print(f"Current keyspace: {current_ks}")
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
 
-# Wait for schema agreement
-agreed = session.await_schema_agreement()
-print(f"Schema agreement reached: {agreed}")
+    # Change keyspace
+    await session.use_keyspace("another_keyspace", case_sensitive=False)
+
+    # Get current keyspace
+    current_ks = session.get_keyspace()
+    print(f"Current keyspace: {current_ks}")
+
+    # Wait for schema agreement
+    agreed = await session.await_schema_agreement()
+    print(f"Schema agreement reached: {agreed}")
+
+asyncio.run(main())
 ```
 
 ### Error Handling
 
 ```python
-from rsylla import ScyllaError
+import asyncio
+from rsylla import Session, ScyllaError
 
-try:
-    result = session.execute("INVALID QUERY")
-except ScyllaError as e:
-    print(f"Query error: {e}")
+async def main():
+    session = await Session.connect(["127.0.0.1:9042"])
+
+    try:
+        result = await session.execute("INVALID QUERY")
+    except ScyllaError as e:
+        print(f"Query error: {e}")
+
+asyncio.run(main())
 ```
 
 ## Consistency Levels
