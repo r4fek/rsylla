@@ -207,6 +207,10 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on contributing to rsyl
 
 ## Version History
 
+- **v0.1.1** - Initial release
+  - benchmarks
+  - updated docs
+
 - **v0.1.0** - Initial release
   - Core functionality
   - Session management

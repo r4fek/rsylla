@@ -334,5 +334,5 @@ Dual-licensed under MIT or Apache-2.0 (matching scylla-rust-driver).
 ---
 
 **Status**: Ready for testing and use
-**Version**: 0.1.0
-**Last Updated**: 2024
+**Version**: 0.1.1
+**Last Updated**: 2025

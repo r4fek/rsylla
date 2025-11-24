@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "rsylla"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python bindings for ScyllaDB/Cassandra using scylla-rust-driver"
 readme = "README.md"
 requires-python = ">=3.11"

@@ -222,5 +222,5 @@ If you find any issues with the documentation:
 
 ---
 
-**Last Updated**: 2024
-**Documentation Version**: 0.1.0
+**Last Updated**: 2025
+**Documentation Version**: 0.1.1
