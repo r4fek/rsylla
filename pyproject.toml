@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT OR Apache-2.0" }
 keywords = ["scylla", "scylladb", "cassandra", "database"]
+
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
@@ -19,6 +20,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
+
+[project.urls]
+Documentation = "https://r4fek.github.io/rsylla/"
+Repository = "https://github.com/r4fek/rsylla"
+Issues = "https://github.com/r4fek/rsylla/issues"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]

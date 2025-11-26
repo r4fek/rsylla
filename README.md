@@ -2,6 +2,8 @@
 
 **The fastest Python driver for ScyllaDB.** High-performance Python bindings using the official [scylla-rust-driver](https://github.com/scylladb/scylla-rust-driver).
 
+**[Documentation](https://r4fek.github.io/rsylla/)** | **[PyPI](https://pypi.org/project/rsylla/)**
+
 ## Performance
 
 rsylla is **~3.9x faster** than the DataStax cassandra-driver and **~1.2x faster** than acsylla:
